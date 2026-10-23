@@ -11,8 +11,14 @@ solitaire = Solitaire()
 
 
 def main(page: ft.Page):
+    def move_on_top(card, controls):
+        """move a carta arrastada para o topo da pilha do Stack"""
+        controls.remove(card)
+        controls.append(card)
+        page.update()
+
     def start_drag(e: ft.DragStartEvent):
-        # guarda a posição original da carta antes de arrastar
+        move_on_top(e.control, controls)
         solitaire.start_top = e.control.top
         solitaire.start_left = e.control.left
         e.control.update()
@@ -49,7 +55,7 @@ def main(page: ft.Page):
         border=ft.Border.all(1),
     )
 
-    card = ft.GestureDetector(
+    card1 = ft.GestureDetector(
         mouse_cursor=ft.MouseCursor.MOVE,
         drag_interval=5,
         on_pan_start=start_drag,
@@ -60,7 +66,19 @@ def main(page: ft.Page):
         content=ft.Container(bgcolor=ft.Colors.GREEN, width=70, height=100),
     )
 
-    page.add(ft.Stack(controls=[slot, card], width=1000, height=500))
+    card2 = ft.GestureDetector(
+        mouse_cursor=ft.MouseCursor.MOVE,
+        drag_interval=5,
+        on_pan_start=start_drag,
+        on_pan_update=drag,
+        on_pan_end=drop,
+        left=100,
+        top=0,
+        content=ft.Container(bgcolor=ft.Colors.YELLOW, width=70, height=100),
+    )
+
+    controls = [slot, card1, card2]
+    page.add(ft.Stack(controls=controls, width=1000, height=500))
 
 
 ft.run(main)
