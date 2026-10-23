@@ -2,7 +2,7 @@ import flet as ft
 
 CARD_WIDTH = 70
 CARD_HEIGHT = 100
-CARD_OFFSET = 20       # distância vertical entre cartas empilhadas (leque)
+CARD_OFFSET = 12       # distância vertical entre cartas empilhadas (leque)
 DROP_PROXIMITY = 20    # distância máxima para a carta encaixar num slot
 COR_VERSO = "#0D47A1"  # cor do verso (carta virada para baixo)
 
@@ -52,7 +52,7 @@ class Card(ft.GestureDetector):
                 src=self.image,
                 width=CARD_WIDTH,
                 height=CARD_HEIGHT,
-                fit=ft.ImageFit.COVER,
+                fit=ft.BoxFit.COVER,
             ),
         )
 

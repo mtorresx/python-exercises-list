@@ -69,25 +69,12 @@ class Solitaire(ft.Stack):
         random.shuffle(self.cards)
         self.controls.extend(self.cards)
 
-        # 1) distribui nas colunas: a 1ª recebe 1 carta, a 2ª recebe 2, e assim por diante
-        remaining = list(self.cards)
-        first_slot = 0
-        while first_slot < len(self.tableau):
-            for slot in self.tableau[first_slot:]:
-                if not remaining:
-                    break  # acabaram as cartas
-                top_card = remaining.pop(0)
-                top_card.place(slot)
-            first_slot += 1
+        # com só 3 cartas, todas começam empilhadas na 1ª coluna, em leque
+        primeira = self.tableau[0]
+        for card in self.cards:
+            card.place(primeira)
 
-        # 2) o que sobrou vai para o stock
-        for card in remaining:
-            card.place(self.stock)
-
-        # 3) vira a carta de cima de cada coluna que tiver carta
-        for slot in self.tableau:
-            top = slot.get_top_card()
-            if top is not None:
-                top.turn_face_up()
+        # só a carta de cima fica virada para cima
+        primeira.get_top_card().turn_face_up()
 
         self.update()
