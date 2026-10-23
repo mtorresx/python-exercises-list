@@ -2,6 +2,7 @@ import flet as ft
 
 CARD_WIDTH = 70
 CARD_HEIGHT = 100
+CARD_OFFSET = 20
 DROP_PROXIMITY = 20
 
 
@@ -29,16 +30,22 @@ class Card(ft.GestureDetector):
         self.solitaire.update()
 
     def bounce_back(self):
-        """devolve a carta para o slot de origem"""
-        self.top = self.slot.top
+        """devolve a carta para a posição dentro do slot de origem"""
+        self.top = self.slot.top + self.slot.pile.index(self) * CARD_OFFSET
         self.left = self.slot.left
         self.update()
 
     def place(self, slot):
-        """coloca a carta no slot"""
-        self.top = slot.top
-        self.left = slot.left
+        """coloca a carta no slot, no final da pilha, com deslocamento"""
+        # tira a carta do slot antigo primeiro, para contar certo
+        if self.slot is not None:
+            self.slot.pile.remove(self)
+
         self.slot = slot
+        slot.pile.append(self)
+
+        self.top = slot.top + (len(slot.pile) - 1) * CARD_OFFSET
+        self.left = slot.left
 
     def start_drag(self, e: ft.DragStartEvent):
         self.move_on_top()
