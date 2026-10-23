@@ -69,12 +69,12 @@ class Solitaire(ft.Stack):
         random.shuffle(self.cards)
         self.controls.extend(self.cards)
 
-        # com só 3 cartas, todas começam empilhadas na 1ª coluna, em leque
-        primeira = self.tableau[0]
+        # as cartas nascem no stock, empilhadas no mesmo lugar
         for card in self.cards:
-            card.place(primeira)
+            card.place(self.stock)
 
-        # só a carta de cima fica virada para cima
-        primeira.get_top_card().turn_face_up()
+        # todas as cartas ficam viradas para cima, mostrando as imagens
+        for card in self.cards:
+            card.turn_face_up()
 
         self.update()
