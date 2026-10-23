@@ -4,12 +4,14 @@ CARD_WIDTH = 70
 CARD_HEIGHT = 100
 CARD_OFFSET = 20       # distância vertical entre cartas empilhadas (leque)
 DROP_PROXIMITY = 20    # distância máxima para a carta encaixar num slot
+COR_VERSO = "#0D47A1"  # cor do verso (carta virada para baixo)
 
 
 class Card(ft.GestureDetector):
-    """Uma carta do baralho. É arrastável porque herda de GestureDetector."""
+    """Uma carta do jogo. Mostra a imagem recebida quando está virada para cima
+    e uma cor lisa (o verso) quando está virada para baixo."""
 
-    def __init__(self, solitaire, suite, rank):
+    def __init__(self, solitaire, image):
         super().__init__()
         self.mouse_cursor = ft.MouseCursor.MOVE
         self.drag_interval = 5
@@ -17,24 +19,42 @@ class Card(ft.GestureDetector):
         self.on_pan_update = self.drag
         self.on_pan_end = self.drop
 
-        self.suite = suite                # naipe (Suite)
-        self.rank = rank                  # valor (Rank)
+        self.image = image                # caminho da imagem, ex: "images/ovo_rock.jpeg"
         self.face_up = False              # começa virada para baixo
         self.solitaire = solitaire        # referência ao tabuleiro
         self.slot = None                  # slot onde a carta está
         self.left = None
         self.top = None
 
-        # visual da carta: começa mostrando o verso
-        self.content = ft.Container(
-            width=CARD_WIDTH,
-            height=CARD_HEIGHT,
-            border_radius=ft.BorderRadius.all(6),
-            content=ft.Image(src="images/card_back.png"),
-        )
+        self.content = self._verso()
 
         # cartas que serão arrastadas juntas (esta + as de cima dela)
         self.draggable_pile = [self]
+
+    def _verso(self):
+        """visual da carta virada para baixo"""
+        return ft.Container(
+            width=CARD_WIDTH,
+            height=CARD_HEIGHT,
+            bgcolor=COR_VERSO,
+            border=ft.Border.all(1, "white"),
+            border_radius=ft.BorderRadius.all(6),
+        )
+
+    def _frente(self):
+        """visual da carta virada para cima: a imagem do jogador"""
+        return ft.Container(
+            width=CARD_WIDTH,
+            height=CARD_HEIGHT,
+            border_radius=ft.BorderRadius.all(6),
+            clip_behavior=ft.ClipBehavior.HARD_EDGE,
+            content=ft.Image(
+                src=self.image,
+                width=CARD_WIDTH,
+                height=CARD_HEIGHT,
+                fit=ft.ImageFit.COVER,
+            ),
+        )
 
     def get_draggable_pile(self):
         """monta a lista de cartas arrastadas, começando por esta carta"""
@@ -52,9 +72,9 @@ class Card(ft.GestureDetector):
         self.solitaire.update()
 
     def turn_face_up(self):
-        """vira a carta para cima, mostrando a face"""
+        """vira a carta para cima, mostrando a imagem"""
         self.face_up = True
-        self.content.content.src = f"images/{self.rank.name}_{self.suite.name}.svg"
+        self.content = self._frente()
         self.solitaire.update()
 
     def place(self, slot):
