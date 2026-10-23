@@ -41,19 +41,29 @@ def main(page: ft.Page):
         page.update()
 
     def drop(e: ft.DragEndEvent):
-        if abs(e.control.top - slot.top) < 20 and abs(e.control.left - slot.left) < 20:
-            place(e.control, slot)
-        else:
-            bounce_back(solitaire, e.control)
+        # percorre todos os slots para ver se a carta caiu perto de algum
+        for slot in slots:
+            if abs(e.control.top - slot.top) < 20 and abs(e.control.left - slot.left) < 20:
+                place(e.control, slot)
+                e.control.update()
+                return
+
+        bounce_back(solitaire, e.control)
         e.control.update()
 
-    slot = ft.Container(
-        width=70,
-        height=100,
-        left=200,
-        top=0,
-        border=ft.Border.all(1),
+    slot0 = ft.Container(
+        width=70, height=100, left=0, top=0, border=ft.Border.all(1)
     )
+
+    slot1 = ft.Container(
+        width=70, height=100, left=200, top=0, border=ft.Border.all(1)
+    )
+
+    slot2 = ft.Container(
+        width=70, height=100, left=300, top=0, border=ft.Border.all(1)
+    )
+
+    slots = [slot0, slot1, slot2]
 
     card1 = ft.GestureDetector(
         mouse_cursor=ft.MouseCursor.MOVE,
@@ -77,8 +87,12 @@ def main(page: ft.Page):
         content=ft.Container(bgcolor=ft.Colors.YELLOW, width=70, height=100),
     )
 
-    controls = [slot, card1, card2]
+    controls = [slot0, slot1, slot2, card1, card2]
     page.add(ft.Stack(controls=controls, width=1000, height=500))
+
+    # distribui as cartas no slot0 (depois do add, porque place() chama page.update())
+    place(card1, slot0)
+    place(card2, slot0)
 
 
 ft.run(main)
