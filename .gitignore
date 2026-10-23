@@ -1,2 +1,5 @@
 build/
 *.spec
+__pycache__/
+.venv/
+.flet/
