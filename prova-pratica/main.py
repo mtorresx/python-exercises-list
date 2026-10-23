@@ -1,15 +1,15 @@
 import flet as ft
 from solitaire import Solitaire
 
-# cor da mesa (verde feltro). Troque por outra, ex: "#1565C0" (azul)
+# cor da mesa (verde feltro)
 COR_MESA = "#2E7D32"
 
 
 def main(page: ft.Page):
-    # o Container pinta o fundo; o Solitaire fica dentro dele
+    solitaire = Solitaire()
     page.add(
         ft.Container(
-            content=Solitaire(),
+            content=solitaire,
             bgcolor=COR_MESA,
             width=1000,
             height=500,
